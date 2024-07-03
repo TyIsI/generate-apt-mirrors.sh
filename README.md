@@ -1,0 +1,50 @@
+# generate-apt-mirrors.sh
+
+What it says on the label!
+
+But here's the short of it:
+
+- Are you sick and tired of manually configuring your APT servers to use particular mirrors?
+- Do you get frustrated when a particular mirror stops working?
+- Does it annoy you that your designated mirror is half way across the country on an under-performing link?
+- Does the mirror across the border have less latency than an RFC1149 IPoAC link to your in-country mirror?
+
+Then wait no more!
+
+It slices*! It dices*! And it even makes you a nifty mirrors.list file in `/etc/apt/sources.list.d`.
+
+## Usage
+
+```shell
+./generate-apt-mirrors.sh
+```
+
+## Configuration
+
+The following variables can be configured to change default behaviour and can be used in a configuration file for automagic loading.
+
+| Variable              | Usage                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MIRROR_CONF_FILES     | Overrides the default configuration files to be loaded.<br /><br />Defaults to `/etc/default/generate-apt-mirrors ./generate-apt-mirrors.conf`                                                                                                                                                                                                                                                                                                                  |
+| MIRROR_CONF_FILE      | Overrides MIRROR_CONF_FILES with a singular file.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| MIRROR_SERVER         | Specifies the server where the list with mirrors is hosted.<br /><br />Defaults to `mirror.ubuntu.com`.                                                                                                                                                                                                                                                                                                                                                         |
+| MIRROR_GEOS           | Overrides the geos to use.<br /><br />Defaults to `CA`. Space separated.<br /><br />I.e. if you specify `CA US`, it will fetch `mirrors.ubuntu.com/CA.txt` and `mirrors.ubuntu.com/US.txt` to determine which mirrors to select.                                                                                                                                                                                                                                |
+| MIRROR_URIS           | Overrides the full server URI list for the mirror list.<br /><br />Defaults to `${MIRROR_SERVER}/${MIRROR_GEOS[0]}.txt`.<br /><br />Generated from MIRROR\*GEOS unless directly overridden.<br /><br />Note: this will override the MIRROR*SERVER and MIRROR*GEOS settings and _**only**_ use the specified value.<br /><br />Examples:<br />- `mirrors.ubuntu.com/CA.txt mirrors.ubuntu.com/US.txt`<br />- `https://settings.internal.example.com/mirrors.txt` |
+| MIRROR_DIST           | The distribution to use.<br /><br />Defaults to `$(lsb_release -cs)`.<br /><br />This provides an escape hatch to generate a mirror.list for a different distribution.                                                                                                                                                                                                                                                                                          |
+| MIRROR_CHANNELS       | From which channels to pull.<br /><br />Defaults to `<MIRROR_DIST> <MIRROR_DIST>-updates`.<br /><br />Example: `jammy jammy-updates`.                                                                                                                                                                                                                                                                                                                           |
+| MIRROR_BACKPORTS      | If set to YES, adds `<MIRROR_DIST>-backports` to MIRROR_CHANNELS.                                                                                                                                                                                                                                                                                                                                                                                               |
+| MIRROR_SECURITY       | If set to YES, adds `<MIRROR_DIST>-security` to MIRROR_CHANNELS.                                                                                                                                                                                                                                                                                                                                                                                                |
+| MIRROR_REPOS          | From which repositories to pull.<br /><br />Defaults to `main restricted`.                                                                                                                                                                                                                                                                                                                                                                                      |
+| MIRROR_UNIVERSE       | If set to YES, adds `universe` to MIRROR_REPOS.                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| MIRROR_MULTIVERSE     | If set to YES, adds `multiverse` to MIRROR_REPOS.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| MIRROR_VERBOSE_OUTPUT | Overrides whether to display the diff output.<br /><br />Defaults to `/dev/stdout`.<br /><br />Example: `MIRROR_VERBOSE_OUTPUT=/dev/null`                                                                                                                                                                                                                                                                                                                       |
+| MIRROR_LIST_FILE      | Overrides the output file.<br /><br />Defaults to `/etc/apt/sources.list.d/mirrors.list`.<br /><br />Can be used to generate a custom sources list file with a different name or location. Potentially useful in combination `MIRROR_DIST` or for staging mirror.list file updates.                                                                                                                                                                             |
+| MIRROR_MAX_MIRRORS    | Override the maximum amount of mirrors being considered. <br /><br />Defaults to 7.                                                                                                                                                                                                                                                                                                                                                                             |
+| NETSELECT_VERSION     | Overrides the `netselect` version.<br /><br />Defaults to `0.3.ds1-29`                                                                                                                                                                                                                                                                                                                                                                                          |
+| NETSELECT_URI         | Overrides the default `netselect` download URI. <br /><br />Defaults to `https://ftp.debian.org/debian/pool/main/n/netselect/netselect_${NETSELECT_VERSION}_amd64.deb`.                                                                                                                                                                                                                                                                                         |
+
+## Disclaimer/Fineprint
+
+\*) it actually does none of those. Knives are sold separately.
+
+There are other tools that do similar things, but they have dependencies and didn't really fit the bill for me.

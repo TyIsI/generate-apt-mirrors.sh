@@ -1,0 +1,5 @@
+*
+!.gitignore
+!example.conf
+!generate-apt-mirrors.sh
+!README.md
