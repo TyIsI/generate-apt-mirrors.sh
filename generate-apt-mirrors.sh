@@ -80,14 +80,14 @@ if [ "${MIRROR_SECURITY}" = "YES" ]; then
     MIRROR_CHANNELS="${MIRROR_CHANNELS} ${MIRROR_DIST}-security"
 fi
 
-MIRROR_REPOS=${MIRROR_REPOS:-"main restricted"}
+MIRROR_POOLS=${MIRROR_POOLS:-"main restricted"}
 
 if [ "${MIRROR_UNIVERSE}" = "YES" ]; then
-    MIRROR_REPOS="${MIRROR_REPOS} universe"
+    MIRROR_POOLS="${MIRROR_POOLS} universe"
 fi
 
 if [ "${MIRROR_UNIVERSE}" = "YES" ]; then
-    MIRROR_REPOS="${MIRROR_REPOS} multiverse"
+    MIRROR_POOLS="${MIRROR_POOLS} multiverse"
 fi
 
 MIRROR_VERBOSE_OUTPUT=${MIRROR_VERBOSE_OUTPUT:-/dev/stdout}
@@ -147,7 +147,7 @@ echo -n "Generating new mirrors file... "
 # shellcheck disable=SC2086
 sudo netselect -s ${MIRROR_MAX_MIRRORS} -t 40 ${MIRRORS_DATA} | awk '{ print $2 }' | head -n ${MIRROR_MAX_MIRRORS} | while read -r MIRROR_URL; do
     for MIRROR_CHANNEL in ${MIRROR_CHANNELS}; do
-        echo "deb ${MIRROR_URL} ${MIRROR_CHANNEL} ${MIRROR_REPOS}"
+        echo "deb ${MIRROR_URL} ${MIRROR_CHANNEL} ${MIRROR_POOLS}"
     done
 done | sudo tee "${MIRROR_LIST_FILE}.new" >/dev/null 2>&1
 echo "OK"
