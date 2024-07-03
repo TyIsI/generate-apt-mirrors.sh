@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e -u
+set -e
 
 DEPENDENCIES="lsb_release sudo wget"
 MISSING_DEPENDENCIES=""
@@ -40,7 +40,7 @@ fi
 MIRROR_CONF_FILES=${MIRROR_CONF_FILES:-"/etc/default/generate-apt-mirrors ./generate-apt-mirrors.conf"}
 
 # shellcheck disable=SC2153
-if [ "${MIRROR_CONF_FILE-}" != "" ]; then
+if [ "${MIRROR_CONF_FILE}" != "" ]; then
     if [ ! -f "${MIRROR_CONF_FILE}" ]; then
         echo "ERROR: MIRROR_CONF_FILES was specified but could open file: ${MIRROR_CONF_FILES}"
         exit 255
@@ -50,7 +50,7 @@ if [ "${MIRROR_CONF_FILE-}" != "" ]; then
     fi
 fi
 
-for CONF_FILE in ${MIRROR_CONF_FILES-}; do
+for CONF_FILE in ${MIRROR_CONF_FILES}; do
     if [ -f "${CONF_FILE}" ]; then
         # shellcheck source=/dev/null
         . "${CONF_FILE}"
@@ -61,10 +61,10 @@ MIRROR_SERVER=${MIRROR_SERVER:-mirrors.ubuntu.com}
 
 MIRROR_GEOS=${MIRROR_GEOS:-CA}
 
-if [ "${MIRROR_URIS-}" = "" ]; then
+if [ "${MIRROR_URIS}" = "" ]; then
     for MIRROR_SERVER_GEO in ${MIRROR_GEOS}; do
 
-        MIRROR_URIS="${MIRROR_URIS-} ${MIRROR_SERVER}/${MIRROR_SERVER_GEO}.txt"
+        MIRROR_URIS="${MIRROR_URIS} ${MIRROR_SERVER}/${MIRROR_SERVER_GEO}.txt"
     done
 fi
 
